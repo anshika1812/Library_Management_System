@@ -2,6 +2,7 @@
 
 #include<stdio.h>
 #include<string.h>
+#include "admin.h"
 
 void header(){
     printf("\n\n\n\n\n\n\n\n\n\n");
@@ -50,6 +51,11 @@ int login(){
     fclose(p);
     if(found==1){
     	printf("\n\t\t\tWelcome! Login details have been verified successfully...\n");
+    	if(strcmp(username,"AdminX")==0){
+    		printf("\n\n\n\t\t\tGood to see you, Admin!! Here's your admin-menu...");
+    		adminmenu();
+    		main();
+		}
     }
     else{
         printf("\n\t\t\tInvalid username entered. Try again...\n");
@@ -73,8 +79,9 @@ int main(){
         if(n==1){
         	reg();
 		}
-        if(n==2){
+        else if(n==2){
             login();
+            return 0;
         }
         else if(n==3){
             project_details();
