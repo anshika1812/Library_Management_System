@@ -157,8 +157,7 @@ int displayBooks(){
 		printf("Error displaying...");
 		return 0;
 	}
-	printf("\n\t\t\tBOOK NAME\t\t\t\tQUANTITY\n\n",name,qty);
-    printf("\n\t\t\tBOOK NAME\t\t\tNET QUANTITY\t\t\tISSUED\n\n",name,qty);
+	printf("\n\t\t\tBOOK NAME\t\t\tNET QUANTITY\t\t\tISSUED\n\n",name,qty);
     while(fgets(booknqty,sizeof(booknqty),p)!=NULL){
         if(sscanf(booknqty,"%s %d %d",name,&qty,&issued)==3) {
             printf("\t\t\t%s\t\t\t\t%d\t\t\t%d\n",name,qty,issued);
@@ -169,7 +168,66 @@ int displayBooks(){
 }
 
 int deleteBook(){
-	return 0;
+	char name[100];
+    printf("\t\t\tEnter name of Book to be removed/deleted: ");
+    scanf("%s",name);
+    struct node*bookStart=NULL;
+    struct node*bookEnd=NULL;
+    FILE*p=fopen("books.txt","r");
+    if(p==NULL){
+    	addBooks();
+    	return 0;
+	}
+	char bookData[200];
+    while(fgets(bookData,sizeof(bookData),p)!=NULL){
+    	char exname[100];
+    	int exqty,exissued;
+        if(sscanf(bookData,"%s %d %d",exname,&exqty,&exissued)==3){
+        	struct node*temp=(struct node*)malloc(sizeof(struct node));
+        	strcpy(temp->bookname,exname);
+        	temp->qty=exqty;
+        	temp->issued=exissued;
+        	temp->loc=NULL;
+        	
+        	if(bookEnd==NULL){
+        		bookStart=temp;
+			}
+			else{
+				bookEnd->loc=temp;
+			}
+			bookEnd=temp;
+		}
+	}
+	fclose(p);
+	int bookPresent=0;
+	struct node*current=bookStart;
+    while(current!=NULL) {
+        if(strcmp(current->bookname,name)==0) {
+            //book found, update the quantity
+            bookPresent=1;
+            break;
+        }
+        current=current->loc;
+    }
+    if(bookPresent==0){
+    	printf("\n\t\t\tNo such book was present.\n\n");
+    	return 0;
+	}
+	else{
+		//update the file by overwriting
+		p=fopen("books.txt","w");
+		current=bookStart;
+    	while(current!=NULL){
+	    	if(strcmp(current->bookname,name)!=0){
+	    		fprintf(p,"%s %d %d\n",current->bookname,current->qty,current->issued);
+	        	struct node*temp=current;
+	        }
+	        current=current->loc;
+    	}
+		fclose(p);
+		printf("\t\t\tDeleted successfully\n\n");
+		return 0;
+	}
 }
 
 int checkStatus(){
