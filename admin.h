@@ -158,9 +158,10 @@ int displayBooks(){
 		return 0;
 	}
 	printf("\n\t\t\tBOOK NAME\t\t\t\tQUANTITY\n\n",name,qty);
+    printf("\n\t\t\tBOOK NAME\t\t\tNET QUANTITY\t\t\tISSUED\n\n",name,qty);
     while(fgets(booknqty,sizeof(booknqty),p)!=NULL){
         if(sscanf(booknqty,"%s %d %d",name,&qty,&issued)==3) {
-            printf("\t\t\t%s\t\t\t\t%d\n",name,qty,issued);
+            printf("\t\t\t%s\t\t\t\t%d\t\t\t%d\n",name,qty,issued);
         }
     }
     fclose(p);
