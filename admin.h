@@ -231,6 +231,51 @@ int deleteBook(){
 }
 
 int checkStatus(){
+	char name[100];
+    printf("\t\t\tEnter name of Book: ");
+    scanf("%s",name);
+    struct node*bookStart=NULL;
+    struct node*bookEnd=NULL;
+    FILE*p=fopen("books.txt","r");
+    if(p==NULL){
+    	addBooks();
+    	return 0;
+	}
+	char bookData[200];
+    while(fgets(bookData,sizeof(bookData),p)!=NULL){
+    	char exname[100];
+    	int exqty,exissued;
+        if(sscanf(bookData,"%s %d %d",exname,&exqty,&exissued)==3){
+        	struct node*temp=(struct node*)malloc(sizeof(struct node));
+        	strcpy(temp->bookname,exname);
+        	temp->qty=exqty;
+        	temp->issued=exissued;
+        	temp->loc=NULL;
+        	
+        	if(bookEnd==NULL){
+        		bookStart=temp;
+			}
+			else{
+				bookEnd->loc=temp;
+			}
+			bookEnd=temp;
+		}
+	}
+	fclose(p);
+	struct node*current=bookStart;
+    while(current!=NULL) {
+        if(strcmp(current->bookname,name)==0) {
+            if(current->issued<current->qty){
+            	printf("\n\t\t\tBook is available for issue.\n\n");
+			}
+			else{
+				printf("\n\t\t\tBook is currently not available for issue.\n\n");
+			}
+            return 0;
+        }
+        current=current->loc;
+    }
+	printf("\n\t\t\tNo such book is available.\n\n");
 	return 0;
 }
 
