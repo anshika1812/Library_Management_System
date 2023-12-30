@@ -59,7 +59,7 @@ int login(){
     		main();
 		}
 		else{
-			printf("\n\n\n\t\t\tHelllo there, %s!! Here's your user-menu...",username);
+			printf("\n\n\n\t\t\tHello there, %s!! Here's your user-menu...",username);
     		usermenu();
     		main();
 		}
