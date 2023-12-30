@@ -357,7 +357,7 @@ int updateuserData(char username[],char bookname[]){
         current=current->loc;
 	}
 	fclose(p);
-	printf("\n\t\tUser data updated successfully.\n");
+	printf("\n\t\t\tUser data updated successfully.\n");
 	return 0;
 }
 
@@ -402,7 +402,7 @@ int updateIssued(char bookname[]){
         current=current->loc;
 	}
 	fclose(p);
-	printf("\n\t\tBook data updated successfully.\n");
+	printf("\t\t\tBook data updated successfully.\n");
 	return 0;
 }
 
@@ -477,7 +477,7 @@ int issueBook(){
         if(strcmp(ucurrent->username,username)==0) {
             userPresent=1;
             if(ucurrent->userIssued==2){
-            	printf("\n\t\tThis user has 2 books issued currently. No more books can be issued, unless at least 1 book is returned.\n");
+            	printf("\n\t\t\tThis user has 2 books issued currently. No more books can be issued, unless at least 1 book is returned.\n");
 				return 0;
 			}
             break;
@@ -485,7 +485,7 @@ int issueBook(){
         ucurrent=ucurrent->loc;
     }
     if (userPresent==0){
-        	printf("\n\t\tUser not found. Consider getting them registered first.\n");
+        	printf("\n\t\t\tUser not found. Consider getting them registered first.\n");
         	return 0;
 	}
 	else{
@@ -496,21 +496,22 @@ int issueBook(){
 	        if(strcmp(bcurrent->bookname,bookname)==0) {
 	            bookPresent=1;
 				if(bcurrent->issued==bcurrent->qty)	{
-					printf("\n\t\tBook is currently unavailable. Consider issuing another book meanwhile.\n");
+					printf("\n\t\t\tBook is currently unavailable. Consider issuing another book meanwhile.\n");
 					return 0;
 				}
 				break;
 			}
 			bcurrent=bcurrent->loc;
+		}
 	}
 	if (bookPresent==0){
-		printf("\n\t\tThe required book couldn't be found. Consider issuing another book.\n");
+		printf("\n\t\t\tThe required book couldn't be found. Consider issuing another book.\n");
         return 0;
 	}
 	else{
 		updateuserData(username,bookname);
 		updateIssued(bookname);
-		printf("\n\t\tBook has been issued successfully");
+		printf("\t\t\tBook has been issued successfully");
 	}
 	return 0;
 }
