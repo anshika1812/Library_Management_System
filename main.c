@@ -3,6 +3,7 @@
 #include<stdio.h>
 #include<string.h>
 #include "admin.h"
+#include "user.h"
 
 void header(){
     printf("\n\n\n\n\n\n\n\n\n\n");
@@ -55,6 +56,11 @@ int login(){
     	if(strcmp(username,"AdminX")==0){
     		printf("\n\n\n\t\t\tGood to see you, Admin!! Here's your admin-menu...");
     		adminmenu();
+    		main();
+		}
+		else{
+			printf("\n\n\n\t\t\tHelllo there, %s!! Here's your user-menu...",username);
+    		usermenu();
     		main();
 		}
     }
