@@ -307,7 +307,7 @@ int checkStatus(){
 	return 0;
 }
 
-int updateuserData(char username[],char bookname[]){
+int updateuserData(char username[],char bookname[],int issORret){
 	//reading data from "usersdata.txt" into linked list
 	struct usernode*userStart=NULL;
     struct usernode*userEnd=NULL;
@@ -340,28 +340,57 @@ int updateuserData(char username[],char bookname[]){
 	fclose(p);
 	struct usernode*current=userStart;
 	//update the file by overwriting
-	p=fopen("usersdata.txt","w");
-	while(current!=NULL){
-    	if(strcmp(current->username,username)==0) {
-            current->userIssued+=1;
-            if(strcmp(current->book1,"Null")==0){
-            	strcpy(current->book1,bookname);
-            	strcpy(current->book2,"Null");
-			}
-			else{
-				strcpy(current->book2,bookname);
-			}
-        }
-        fprintf(p,"%s %s %s %d\n",current->username,current->book1,current->book2,current->userIssued);
-        struct node*temp=current;
-        current=current->loc;
+	if(issORret==1){
+		p=fopen("usersdata.txt","w");
+		while(current!=NULL){
+	    	if(strcmp(current->username,username)==0) {
+	            current->userIssued+=1;
+	            if(strcmp(current->book1,"Null")==0){
+	            	strcpy(current->book1,bookname);
+	            	strcpy(current->book2,"Null");
+				}
+				else{
+					strcpy(current->book2,bookname);
+				}
+	        }
+	        fprintf(p,"%s %s %s %d\n",current->username,current->book1,current->book2,current->userIssued);
+	        struct node*temp=current;
+	        current=current->loc;
+		}
+		fclose(p);
+		printf("\n\t\t\tUser data updated successfully.\n");
+		return 0;
 	}
-	fclose(p);
-	printf("\n\t\t\tUser data updated successfully.\n");
-	return 0;
+	else{
+		p=fopen("usersdata.txt","w");
+		while(current!=NULL){
+	    	if(strcmp(current->username,username)==0) {
+	            if(strcmp(current->book1,bookname)==0){
+	            	strcpy(current->book1,current->book2);
+	            	strcpy(current->book2,"Null");
+	            	current->userIssued-=1;
+	            	printf("\n\t\t\tUser data updated successfully.\n");
+				}
+				else if(strcmp(current->book2,bookname)==0){
+					strcpy(current->book2,"Null");
+					current->userIssued-=1;
+	            	printf("\n\t\t\tUser data updated successfully.\n");
+				}
+				else{
+					printf("\n\t\t\tCurrently, this particular book has not been issued by this user.\n");
+					return -1;
+				}
+	        }
+	        fprintf(p,"%s %s %s %d\n",current->username,current->book1,current->book2,current->userIssued);
+	        struct node*temp=current;
+	        current=current->loc;
+		}
+		fclose(p);
+		return 0;		
+	}
 }
 
-int updateIssued(char bookname[]){
+int updateIssued(char bookname[],int issORret){
 	struct node*bookStart=NULL;
     struct node*bookEnd=NULL;
     FILE*p=fopen("books.txt","r");
@@ -392,18 +421,34 @@ int updateIssued(char bookname[]){
 	fclose(p);
 	struct node*current=bookStart;
 	//update the file by overwriting
-	p=fopen("books.txt","w");
-	while(current!=NULL){
-    	if(strcmp(current->bookname,bookname)==0) {
-            current->issued+=1;
-        }
-        fprintf(p,"%s %d %d\n",current->bookname,current->qty,current->issued);
-        struct node*temp=current;
-        current=current->loc;
+	if(issORret==1){
+		p=fopen("books.txt","w");
+		while(current!=NULL){
+	    	if(strcmp(current->bookname,bookname)==0) {
+	            current->issued+=1;
+	        }
+	        fprintf(p,"%s %d %d\n",current->bookname,current->qty,current->issued);
+	        struct node*temp=current;
+	        current=current->loc;
+		}
+		fclose(p);
+		printf("\t\t\tBook data updated successfully.\n");
+		return 0;
 	}
-	fclose(p);
-	printf("\t\t\tBook data updated successfully.\n");
-	return 0;
+	else{
+		p=fopen("books.txt","w");
+		while(current!=NULL){
+	    	if(strcmp(current->bookname,bookname)==0) {
+	            current->issued-=1;
+	        }
+	        fprintf(p,"%s %d %d\n",current->bookname,current->qty,current->issued);
+	        struct node*temp=current;
+	        current=current->loc;
+		}
+		fclose(p);
+		printf("\t\t\tBook data updated successfully.\n");
+		return 0;	
+	}
 }
 
 int issueBook(){
@@ -509,13 +554,125 @@ int issueBook(){
         return 0;
 	}
 	else{
-		updateuserData(username,bookname);
-		updateIssued(bookname);
+		updateuserData(username,bookname,1);
+		updateIssued(bookname,1);
 		printf("\t\t\tBook has been issued successfully");
 	}
 	return 0;
 }
 
 int returnBook(){
-	return 0;
+	//reading data from "usersdata.txt" into linked list
+	char username[50],bookname[100];
+	int userPresent=0;
+	int bookPresent=0;
+	struct usernode*userStart=NULL;
+    struct usernode*userEnd=NULL;
+    FILE*p=fopen("usersdata.txt","r");
+    if(p==NULL){
+    	printf("\n\t\t\tError occured...\n\n");
+    	return 0;
+	}
+	char userData[300];
+    while(fgets(userData,sizeof(userData),p)!=NULL){
+    	char exusername[50],exbook1[100],exbook2[100];
+    	int exuserIssued;
+        if(sscanf(userData,"%s %s %s %d",exusername,exbook1,exbook2,&exuserIssued)==4){
+        	struct usernode*temp=(struct usernode*)malloc(sizeof(struct usernode));
+        	strcpy(temp->username,exusername);
+        	strcpy(temp->book1,exbook1);
+        	strcpy(temp->book2,exbook2);
+        	temp->userIssued=exuserIssued;
+        	temp->loc=NULL;
+        	
+        	if(userEnd==NULL){
+        		userStart=temp;
+			}
+			else{
+				userEnd->loc=temp;
+			}
+			userEnd=temp;
+		}
+	}
+	fclose(p);	
+	//reading data from "books.txt"
+	struct node*bookStart=NULL;
+    struct node*bookEnd=NULL;
+    FILE*f=fopen("books.txt","r");
+    if(f==NULL){
+    	printf("\n\t\t\tError occured...\n\n");
+    	return 0;
+	}
+	char bookData[200];
+    while(fgets(bookData,sizeof(bookData),f)!=NULL){
+    	char exname[100];
+    	int exqty,exissued;
+        if(sscanf(bookData,"%s %d %d",exname,&exqty,&exissued)==3){
+        	struct node*temp=(struct node*)malloc(sizeof(struct node));
+        	strcpy(temp->bookname,exname);
+        	temp->qty=exqty;
+        	temp->issued=exissued;
+        	temp->loc=NULL;
+        	
+        	if(bookEnd==NULL){
+        		bookStart=temp;
+			}
+			else{
+				bookEnd->loc=temp;
+			}
+			bookEnd=temp;
+		}
+	}
+	fclose(f);
+	
+	printf("\t\t\tEnter name of user: ");
+    scanf("%s",username);
+    struct usernode*ucurrent=userStart;
+    while(ucurrent!=NULL) {
+        if(strcmp(ucurrent->username,username)==0) {
+            userPresent=1;
+            if(ucurrent->userIssued==0){
+            	printf("\n\t\t\tThis user has 0 books issued currently. Thus, they have got no book to return.\n");
+				return 0;
+			}
+            break;
+        }
+        ucurrent=ucurrent->loc;
+    }
+    if (userPresent==0){
+        	printf("\n\t\t\tUser not found.\n");
+        	return 0;
+	}
+	else{
+		printf("\t\t\tEnter name of Book to be returned: ");
+    	scanf("%s",bookname);
+		struct node*bcurrent=bookStart;
+	    while(bcurrent!=NULL) {
+	        if(strcmp(bcurrent->bookname,bookname)==0) {
+	            bookPresent=1;
+				if(bcurrent->issued==0)	{
+					printf("\n\t\t\tBook is currently not issued by anyone. Return can't be processed.\n");
+					return 0;
+				}
+				break;
+			}
+			bcurrent=bcurrent->loc;
+		}
+	}
+	if (bookPresent==0){
+		printf("\n\t\t\tThere's no such book in the library. Return can't be processed'\n");
+        return 0;
+	}
+	else{
+		int check = updateuserData(username,bookname,-1);
+		if(check!=-1){
+			updateIssued(bookname,-1);
+			printf("\t\t\tBook has been returned successfully");	
+			return 0;
+		}
+		else{
+			printf("\t\t\tReturn unsuccessful");	
+			return 0;
+		}
+	}
 }
