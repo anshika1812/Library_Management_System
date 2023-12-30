@@ -556,7 +556,7 @@ int issueBook(){
 	else{
 		updateuserData(username,bookname,1);
 		updateIssued(bookname,1);
-		printf("\t\t\tBook has been issued successfully");
+		printf("\t\t\tBook has been issued successfully.");
 	}
 	return 0;
 }
@@ -667,11 +667,11 @@ int returnBook(){
 		int check = updateuserData(username,bookname,-1);
 		if(check!=-1){
 			updateIssued(bookname,-1);
-			printf("\t\t\tBook has been returned successfully");	
+			printf("\t\t\tBook has been returned successfully.");	
 			return 0;
 		}
 		else{
-			printf("\t\t\tReturn unsuccessful");	
+			printf("\t\t\tReturn unsuccessful.");	
 			return 0;
 		}
 	}
