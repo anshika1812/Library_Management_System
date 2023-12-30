@@ -29,6 +29,7 @@ int reg(){
     p=fopen("users.txt", "a");
     fprintf(p,"%s\n", username);
     fclose(p);
+    adduserData(username,"Null","Null",0);
     printf("\t\t\tRegistration successful! Login with your username to proceed further!\n");
     login();
     return 0;
