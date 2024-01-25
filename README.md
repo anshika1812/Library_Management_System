@@ -27,6 +27,5 @@ The implemented functions are broadly divided into 3 broad menus:
 - Drop a message to the admin
 - Return to main menu
 
-> [!NOTE]
 
 > *Currently, this project is equipped with some of the most basic functionalities of a library management system, and thus, it can be safely assumed that this is a work in progress, as I plan to add some advance functionalities in future. Any contributions, ideas or suggestions regarding improvements would be highly appreciated!!*
